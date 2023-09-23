@@ -1,22 +1,18 @@
 #!/usr/bin/node
+
 const request = require('request');
-let countFilms = 0;
+const url = process.argv[2];
 
-request(process.argv[2], function (err, _response, body) {
-  if (err == null) {
-    const resp = JSON.parse(body); // Analyse la resp JSON en un objet JS
-
-    const { results } = resp;// Obtient la propriété 'results' de l'objet 'resp'.
-
-    for (const element of results) {
-      const { characters } = element;
-
-      for (const personnage of characters) {
-        if (personnage.search('18') >= 0) {
-          countFilms++;
+request(url, (error, response, body) => {
+  if (!error) {
+    let length = 0;
+    for (const movie of JSON.parse(body).results) {
+      for (const char of movie.characters) {
+        if (char.includes(18)) {
+          length++;
         }
       }
     }
+    console.log(length);
   }
-  console.log(countFilms);
 });
